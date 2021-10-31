@@ -43,8 +43,11 @@ namespace ChessConsole
 
             switch ((PieceType)piece.Value.PieceType)
             {
-                case PieceType.Pawn:
-                    moves.AddRange(GetPawnMoves(board, x, y));
+                //case PieceType.Pawn:
+                //    moves.AddRange(GetPawnMoves(board, x, y));
+                //    break;
+                case PieceType.Knight:
+                    moves.AddRange(GetKnightMoves(board, x, y));
                     break;
                 default:
                     break;
@@ -131,6 +134,35 @@ namespace ChessConsole
                 }
             }
 
+            return moves;
+        }
+
+        public List<Move> GetKnightMoves(Board board, int x, int y)
+        {
+            var currentPiece = board.Squares[x, y].Piece.Value;
+            var moves = new List<Move>();
+            int[,] moveDirections = new int[8,2]
+            { 
+                { 1, 2 }, { -1, 2 }, { 1, -2 }, { -1, -2 },
+                { 2, 1 }, { -2, 1 }, { 2, -1 }, { -2, -1 }
+            };
+            for (int dir = 0; dir < 8; dir++)
+            {
+                int newPosX = x + moveDirections[dir,0];
+                int newPosY = y + moveDirections[dir,1];
+
+                // Check not off the board
+                if (newPosX >= Board.Files || newPosX < 0 || newPosY >= Board.Ranks || newPosY < 0)
+                    continue; /* Skip if off the board */
+
+                // Check dest is empty or opposite colour piece
+                var destSquare = board.Squares[newPosX, newPosY];
+                if ((!destSquare.Piece.HasValue)
+                 || destSquare.Piece?.PieceColour != currentPiece.PieceColour)
+                {
+                    moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                }
+            }
             return moves;
         }
 
