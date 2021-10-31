@@ -44,8 +44,6 @@ namespace ChessConsole
             switch ((PieceType)piece.Value.PieceType)
             {
                 case PieceType.Pawn:
-                    //if (piece.PieceColour == PieceColour.Black)
-                    //{ moveDirections = GetBlackPawnMoves(); }
                     moves.AddRange(GetPawnMoves(board, x, y));
                     break;
                 default:
@@ -58,9 +56,7 @@ namespace ChessConsole
         private List<Move> GetPawnMoves(Board board, int x, int y)
         {
             var moves = new List<Move>();
-            int moveX, moveY;
             int newPosX, newPosY;
-            //var moveDirections = new List<int[,]>();
             var currentPiece = board.Squares[x, y].Piece.Value;
 
             int diagMoveLeft, diagMoveRight, forwardMove;
@@ -71,72 +67,69 @@ namespace ChessConsole
                 diagMoveLeft = 1;
                 diagMoveRight = -1;
                 forwardMove = -1;
-            } else
+            }
+            else
             {
                 diagMoveLeft = -1;
                 diagMoveRight = 1;
                 forwardMove = 1;
             }
 
-            //if (currentPiece.PieceColour == PieceColour.Black)
-            //{
-                // One step forward
-                //moveX = 0; moveY = forwardMove;
+            // One step forward
+            newPosX = x;
+            newPosY = y + forwardMove;
+            // Check off the board
+            if (!(newPosX >= Board.Files || newPosX < 0 || newPosY >= Board.Ranks || newPosY < 0))
+            {
+                // Check dest is empty
+                var destSquare = board.Squares[newPosX, newPosY];
+                if (!destSquare.Piece.HasValue)
+                {
+                    moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                }
+            }
+
+            // Two step forward first move
+            if (firstPawnMove)
+            {
                 newPosX = x;
-                newPosY = y + forwardMove;
-                // Check off the board
-                if (!(newPosX >= Board.Files || newPosX < 0 || newPosY >= Board.Ranks || newPosY < 0))
-                {
-                    // Check dest is empty
-                    var destSquare = board.Squares[newPosX, newPosY];
-                    if (!destSquare.Piece.HasValue)
-                    {
-                        moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
-                    }
-                }
-
-                // Two step forward first move
-                if (firstPawnMove)
-                {
-                    newPosX = x;
-                    newPosY = y + (forwardMove*2);
+                newPosY = y + (forwardMove*2);
                     
-                    // Check dest is empty
-                    var destSquare = board.Squares[newPosX, newPosY];
-                    if (!destSquare.Piece.HasValue)
-                    {
-                        moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
-                    }
-                }
-
-                // Diagonal take left
-                newPosX = x + diagMoveLeft;
-                newPosY = y + forwardMove;
-                if (!(newPosX >= Board.Files || newPosX < 0 || newPosY >= Board.Ranks || newPosY < 0))
+                // Check dest is empty
+                var destSquare = board.Squares[newPosX, newPosY];
+                if (!destSquare.Piece.HasValue)
                 {
-                    // Check dest is an opposite colour piece
-                    var destSquare = board.Squares[newPosX, newPosY];
-                    if (destSquare.Piece.HasValue
-                        && destSquare.Piece.Value.PieceColour != currentPiece.PieceColour)
-                    {
-                        moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
-                    }
+                    moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
                 }
+            }
+
+            // Diagonal take left
+            newPosX = x + diagMoveLeft;
+            newPosY = y + forwardMove;
+            if (!(newPosX >= Board.Files || newPosX < 0 || newPosY >= Board.Ranks || newPosY < 0))
+            {
+                // Check dest is an opposite colour piece
+                var destSquare = board.Squares[newPosX, newPosY];
+                if (destSquare.Piece.HasValue
+                    && destSquare.Piece.Value.PieceColour != currentPiece.PieceColour)
+                {
+                    moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                }
+            }
 
             // Diagonal take right
             newPosX = x + diagMoveRight;
             newPosY = y + forwardMove;
             if (!(newPosX >= Board.Files || newPosX < 0 || newPosY >= Board.Ranks || newPosY < 0))
             {
-                    // Check dest is an opposite colour piece
-                    var destSquare = board.Squares[newPosX, newPosY];
-                    if (destSquare.Piece.HasValue
-                        && destSquare.Piece.Value.PieceColour != currentPiece.PieceColour)
-                    {
-                        moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
-                    }
+                // Check dest is an opposite colour piece
+                var destSquare = board.Squares[newPosX, newPosY];
+                if (destSquare.Piece.HasValue
+                    && destSquare.Piece.Value.PieceColour != currentPiece.PieceColour)
+                {
+                    moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
                 }
-            //}
+            }
 
             return moves;
         }
