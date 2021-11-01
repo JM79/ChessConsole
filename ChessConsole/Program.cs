@@ -14,10 +14,9 @@ namespace ChessConsole
 
             var moveGenerator = new MoveGenerator();
             //var moves = moveGenerator.GetPossibleMovesForPiece(board, 5, 6);
-            var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 3);
+            var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 2);
 
-            //foreach (var move in moves)
-            //{ PrintBoard(move.Board); }
+            PrintMoves(moves);
             int moveCount = CountMoves(moves);
             Console.WriteLine($"Total moves: {moveCount}");
 
@@ -89,10 +88,30 @@ namespace ChessConsole
 
         private static int CountMoves(List<Move> moves)
         {
-            int count = moves.Count;
-            foreach (var move in moves)
-                count += CountMoves(move.SubsequentMoves);
+            //int count = moves.Count;
+            int count = 0;
+            //foreach (var move in moves)
+            //{
+                //if (move.SubsequentMoves.Count == 0)
+                //{ count++; } /* Count only the final moves */
+                //else
+                //{
+                //    //count += CountMoves(move.SubsequentMoves);
+                //    //Console.WriteLine(count);
+                //    CountMoves(move.SubsequentMoves);
+                //}
+            //}
+            Console.WriteLine(moves.Count);
             return count;
+        }
+
+        private static void PrintMoves(List<Move> moves)
+        {
+            foreach (var move in moves)
+            {
+                PrintBoard(move.Board);
+                //PrintMoves(move.SubsequentMoves);
+            }
         }
     }
 }

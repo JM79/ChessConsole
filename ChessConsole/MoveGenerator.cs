@@ -46,12 +46,21 @@ namespace ChessConsole
                 case PieceType.Pawn:
                     moves.AddRange(GetPawnMoves(board, x, y));
                     break;
-                case PieceType.Knight:
-                    moves.AddRange(GetKnightMoves(board, x, y));
-                    break;
-                case PieceType.Bishop:
-                    moves.AddRange(GetBishopMoves(board, x, y));
-                    break;
+                //case PieceType.Knight:
+                //    moves.AddRange(GetKnightMoves(board, x, y));
+                //    break;
+                //case PieceType.Bishop:
+                //    moves.AddRange(GetBishopMoves(board, x, y));
+                //    break;
+                //case PieceType.Rook:
+                //    moves.AddRange(GetRookMoves(board, x, y));
+                //    break;
+                //case PieceType.Queen:
+                //    moves.AddRange(GetQueenMoves(board, x, y));
+                //    break;
+                //case PieceType.King:
+                //    moves.AddRange(GetKingMoves(board, x, y));
+                //    break;
                 default:
                     break;
             }
@@ -159,6 +168,28 @@ namespace ChessConsole
         public List<Move> GetRookMoves(Board board, int x, int y)
         {
             int[,] moveDirections = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+            return GetMoves(board, x, y, moveDirections);
+        }
+
+        public List<Move> GetKingMoves(Board board, int x, int y)
+        {
+            int[,] moveDirections = new int[8, 2]
+            {
+                { 1, 0 }, { 1, 1 }, { 1, -1 },
+                { 0, -1 },{ 0, 1 }, 
+                { -1, 0 },{ -1, -1 }, { -1, 1 }
+            };
+            return GetMoves(board, x, y, moveDirections, singleMove: true);
+        }
+
+        public List<Move> GetQueenMoves(Board board, int x, int y)
+        {
+            int[,] moveDirections = new int[8, 2]
+            {
+                { 1, 0 }, { 1, 1 }, { 1, -1 },
+                { 0, -1 },{ 0, 1 },
+                { -1, 0 },{ -1, -1 }, { -1, 1 }
+            };
             return GetMoves(board, x, y, moveDirections);
         }
 
