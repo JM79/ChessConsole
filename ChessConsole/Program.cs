@@ -22,17 +22,12 @@ namespace ChessConsole
 
             Console.WriteLine("Press enter to close");
             var temp = Console.ReadKey();
-            //for (int i = 0; i < 8; i++)
-            //{
-            //    var WhitePawn = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Pawn };
-            //    board.Squares[1, 0].Piece = WhitePawn;
-            //}
         }
 
         public static void SetDefaultBoard(Board board)
         {
-            var WhitePawn   = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Pawn, Unicode = '\u2659' };
-            var BlackPawn   = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Pawn, Unicode = '\u265F' };
+            var WhitePawn   = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Pawn, Unicode = '\u2659', CharacterCode = 'P' };
+            var BlackPawn   = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Pawn, Unicode = '\u265F', CharacterCode = 'P' };
             
             // Set Pawns
             int y = 1;
@@ -42,23 +37,23 @@ namespace ChessConsole
             for (int x = 0; x < 8; x++)
             { board.Squares[x, y].Piece = BlackPawn; }
 
-            board.Squares[0, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Rook,   Unicode = '\u2656' }; 
-            board.Squares[1, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Knight, Unicode = '\u2658' }; 
-            board.Squares[2, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Bishop, Unicode = '\u2657' };
-            board.Squares[3, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Queen,  Unicode = '\u2655' };
-            board.Squares[4, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.King,   Unicode = '\u2654' };
-            board.Squares[5, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Bishop, Unicode = '\u2657' };
-            board.Squares[6, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Knight, Unicode = '\u2658' };
-            board.Squares[7, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Rook,   Unicode = '\u2656' };
+            board.Squares[0, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Rook,   Unicode = '\u2656', CharacterCode = 'R' }; 
+            board.Squares[1, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Knight, Unicode = '\u2658', CharacterCode = 'N' }; 
+            board.Squares[2, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Bishop, Unicode = '\u2657', CharacterCode = 'B' };
+            board.Squares[3, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Queen,  Unicode = '\u2655', CharacterCode = 'Q' };
+            board.Squares[4, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.King,   Unicode = '\u2654', CharacterCode = 'K' };
+            board.Squares[5, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Bishop, Unicode = '\u2657', CharacterCode = 'B' };
+            board.Squares[6, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Knight, Unicode = '\u2658', CharacterCode = 'N' };
+            board.Squares[7, 0].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Rook,   Unicode = '\u2656', CharacterCode = 'R' };
 
-            board.Squares[0, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Rook,   Unicode = '\u265C' };
-            board.Squares[1, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Knight, Unicode = '\u265E' };
-            board.Squares[2, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Bishop, Unicode = '\u265D' };
-            board.Squares[3, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Queen,  Unicode = '\u265B' };
-            board.Squares[4, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.King,   Unicode = '\u2654' };
-            board.Squares[5, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Bishop, Unicode = '\u265D' };
-            board.Squares[6, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Knight, Unicode = '\u265E' };
-            board.Squares[7, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Rook,   Unicode = '\u265C' };
+            board.Squares[0, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Rook,   Unicode = '\u265C', CharacterCode = 'R' };
+            board.Squares[1, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Knight, Unicode = '\u265E', CharacterCode = 'N' };
+            board.Squares[2, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Bishop, Unicode = '\u265D', CharacterCode = 'B' };
+            board.Squares[3, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Queen,  Unicode = '\u265B', CharacterCode = 'Q' };
+            board.Squares[4, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.King,   Unicode = '\u2654', CharacterCode = 'K' };
+            board.Squares[5, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Bishop, Unicode = '\u265D', CharacterCode = 'B' };
+            board.Squares[6, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Knight, Unicode = '\u265E', CharacterCode = 'N' };
+            board.Squares[7, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Rook,   Unicode = '\u265C', CharacterCode = 'R' };
         }
 
         public static void PrintBoard(Board board)
@@ -71,16 +66,14 @@ namespace ChessConsole
                 for (int x = 0; x < 8; x++)
                 {
                     Console.BackgroundColor = (board.Squares[x, y].DarkSquare) ? ConsoleColor.DarkGreen : ConsoleColor.Green;
-                    char pieceUnicode = (board.Squares[x, y].Piece.HasValue) ? ((Piece)board.Squares[x, y].Piece).Unicode : '_';
-                    if (pieceUnicode == '\u265F') /* Special case fix for Black Pawn Unicode */
-                    { Console.Write($" {pieceUnicode}"); }
-                    else if (pieceUnicode != '_') /* Not an mpty square */
-                    { Console.Write($" {pieceUnicode} "); }
+                    char pieceChar = (board.Squares[x, y].Piece.HasValue) ? ((Piece)board.Squares[x, y].Piece).CharacterCode : '_';
+                    if (pieceChar != '_') /* Not an empty square */
+                    { Console.Write($" {pieceChar} "); }
                     else
                     {
                         var foreColour = Console.ForegroundColor;
                         Console.ForegroundColor = Console.BackgroundColor;
-                        Console.Write($" {pieceUnicode} ");
+                        Console.Write($" {pieceChar} ");
                         Console.ForegroundColor = foreColour;
                     }
                 }

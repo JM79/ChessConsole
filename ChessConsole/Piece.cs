@@ -12,6 +12,7 @@ namespace ChessConsole
         public PieceType PieceType { get; set; }
         public PieceColour PieceColour { get; set; }
         public char Unicode { get; set; }
+        public char CharacterCode { get; set; }
 
         public Piece GetCopy()
         {
@@ -19,7 +20,8 @@ namespace ChessConsole
             {
                 PieceType = PieceType,
                 PieceColour = PieceColour,
-                Unicode = Unicode
+                Unicode = Unicode,
+                CharacterCode = CharacterCode
             };
         }
     }
