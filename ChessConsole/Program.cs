@@ -8,16 +8,15 @@ namespace ChessConsole
         static void Main(string[] args)
         {
             var board = new Board();
-            //PrintBoard(board);
             SetDefaultBoard(board);
             PrintBoard(board);
 
             var moveGenerator = new MoveGenerator();
             //var moves = moveGenerator.GetPossibleMovesForPiece(board, 5, 6);
-            var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 2);
+            var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 3);
 
-            foreach (var move in moves)
-            { PrintBoard(move.Board); }
+            //foreach (var move in moves)
+            //{ PrintBoard(move.Board); }
             Console.WriteLine($"Total moves: {moves.Count}");
 
             Console.WriteLine("Press enter to close");

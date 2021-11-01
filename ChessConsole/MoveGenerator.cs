@@ -32,7 +32,7 @@ namespace ChessConsole
             }
             return possMoves;
         }
-
+        
         public List<Move> GetPossibleMovesForPiece(Board board, int x, int y)
         {
             var moves = new List<Move>();
@@ -41,11 +41,11 @@ namespace ChessConsole
             if (!piece.HasValue)
             { return moves; }
 
-            switch ((PieceType)piece.Value.PieceType)
+            switch (piece.Value.PieceType)
             {
-                //case PieceType.Pawn:
-                //    moves.AddRange(GetPawnMoves(board, x, y));
-                //    break;
+                case PieceType.Pawn:
+                    moves.AddRange(GetPawnMoves(board, x, y));
+                    break;
                 case PieceType.Knight:
                     moves.AddRange(GetKnightMoves(board, x, y));
                     break;
@@ -82,7 +82,7 @@ namespace ChessConsole
             newPosX = x;
             newPosY = y + forwardMove;
             // Check off the board
-            if (!(newPosX >= Board.Files || newPosX < 0 || newPosY >= Board.Ranks || newPosY < 0))
+            if (IsPositionOnBoard(board, newPosX, newPosY))
             {
                 // Check dest is empty
                 var destSquare = board.Squares[newPosX, newPosY];
@@ -109,7 +109,7 @@ namespace ChessConsole
             // Diagonal take left
             newPosX = x + diagMoveLeft;
             newPosY = y + forwardMove;
-            if (!(newPosX >= Board.Files || newPosX < 0 || newPosY >= Board.Ranks || newPosY < 0))
+            if (IsPositionOnBoard(board, newPosX, newPosY))
             {
                 // Check dest is an opposite colour piece
                 var destSquare = board.Squares[newPosX, newPosY];
@@ -123,7 +123,7 @@ namespace ChessConsole
             // Diagonal take right
             newPosX = x + diagMoveRight;
             newPosY = y + forwardMove;
-            if (!(newPosX >= Board.Files || newPosX < 0 || newPosY >= Board.Ranks || newPosY < 0))
+            if (IsPositionOnBoard(board, newPosX, newPosY))
             {
                 // Check dest is an opposite colour piece
                 var destSquare = board.Squares[newPosX, newPosY];
@@ -152,15 +152,15 @@ namespace ChessConsole
                 int newPosY = y + moveDirections[dir,1];
 
                 // Check not off the board
-                if (newPosX >= Board.Files || newPosX < 0 || newPosY >= Board.Ranks || newPosY < 0)
-                    continue; /* Skip if off the board */
-
-                // Check dest is empty or opposite colour piece
-                var destSquare = board.Squares[newPosX, newPosY];
-                if ((!destSquare.Piece.HasValue)
-                 || destSquare.Piece?.PieceColour != currentPiece.PieceColour)
+                if (IsPositionOnBoard(board, newPosX, newPosY))
                 {
-                    moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                    // Check dest is empty or opposite colour piece
+                    var destSquare = board.Squares[newPosX, newPosY];
+                    if ((!destSquare.Piece.HasValue)
+                     || destSquare.Piece?.PieceColour != currentPiece.PieceColour)
+                    {
+                        moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                    }
                 }
             }
             return moves;
@@ -177,6 +177,11 @@ namespace ChessConsole
                 Board = newBoard,
                 PreviousBoard = board,
             };
+        }
+
+        private bool IsPositionOnBoard(Board board, int x, int y)
+        {
+            return (x < Board.Files && x >= 0 && y < Board.Ranks && y >= 0);
         }
     }
 }
