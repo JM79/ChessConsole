@@ -24,8 +24,8 @@ namespace ChessConsole
                         var newMoves = GetPossibleMovesForPiece(board, x, y);
                         foreach (var newMove in newMoves)
                         {
+                            newMove.SubsequentMoves = GetAllPossibleMovesToDepth(newMove.Board, ply - depth);
                             possMoves.Add(newMove);
-                            possMoves.AddRange(GetAllPossibleMovesToDepth(newMove.Board, ply-depth));
                         }
                     }
                 }
@@ -142,41 +142,34 @@ namespace ChessConsole
 
         public List<Move> GetKnightMoves(Board board, int x, int y)
         {
-            var currentPiece = board.Squares[x, y].Piece.Value;
-            var moves = new List<Move>();
-            int[,] moveDirections = new int[8,2]
-            { 
+            int[,] moveDirections = new int[8, 2]
+            {
                 { 1, 2 }, { -1, 2 }, { 1, -2 }, { -1, -2 },
                 { 2, 1 }, { -2, 1 }, { 2, -1 }, { -2, -1 }
             };
-            for (int dir = 0; dir < 8; dir++)
-            {
-                int newPosX = x + moveDirections[dir,0];
-                int newPosY = y + moveDirections[dir,1];
-
-                // Check not off the board
-                if (IsPositionOnBoard(board, newPosX, newPosY))
-                {
-                    // Check dest is empty or opposite colour piece
-                    var destSquare = board.Squares[newPosX, newPosY];
-                    if ((!destSquare.Piece.HasValue)
-                     || destSquare.Piece?.PieceColour != currentPiece.PieceColour)
-                    {
-                        moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
-                    }
-                }
-            }
-            return moves;
+            return GetMoves(board, x, y, moveDirections, singleMove: true);
         }
 
         public List<Move> GetBishopMoves(Board board, int x, int y)
         {
+            int[,] moveDirections = new int[4, 2] { { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } };
+            return GetMoves(board, x, y, moveDirections);
+        }
+
+        public List<Move> GetRookMoves(Board board, int x, int y)
+        {
+            int[,] moveDirections = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+            return GetMoves(board, x, y, moveDirections);
+        }
+
+        public List<Move> GetMoves(Board board, int x, int y, int[,] moveDirections, bool singleMove = false)
+        {
             var currentPiece = board.Squares[x, y].Piece.Value;
             var moves = new List<Move>();
-            int[,] moveDirections = new int[4, 2] { { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } };
-            for (int dir = 0; dir < 4; dir++)
+            int moveMax = singleMove ? 1 : 8;
+            for (int dir = 0; dir < moveDirections.Length/2; dir++)
             {
-                for (int multiplier = 1; multiplier <= 8; multiplier++)
+                for (int multiplier = 1; multiplier <= moveMax; multiplier++)
                 {
                     int newPosX = x + (moveDirections[dir, 0] * multiplier);
                     int newPosY = y + (moveDirections[dir, 1] * multiplier);
@@ -192,10 +185,10 @@ namespace ChessConsole
                             moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
                         }
                         if (destSquare.Piece.HasValue)
-                        { multiplier = 9; } /* Hit another piece, no further moves possible in this direction */
+                        { multiplier = moveMax + 1; } /* Hit another piece, no further moves possible in this direction */
                     }
                     else
-                    { multiplier = 9; } /* Already off the board, no need to continue in this direction further */
+                    { multiplier = moveMax + 1; } /* Already off the board, no need to continue in this direction further */
                 }
             }
             return moves;

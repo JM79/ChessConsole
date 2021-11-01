@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ChessConsole
@@ -17,7 +18,8 @@ namespace ChessConsole
 
             //foreach (var move in moves)
             //{ PrintBoard(move.Board); }
-            Console.WriteLine($"Total moves: {moves.Count}");
+            int moveCount = CountMoves(moves);
+            Console.WriteLine($"Total moves: {moveCount}");
 
             Console.WriteLine("Press enter to close");
             var temp = Console.ReadKey();
@@ -83,6 +85,14 @@ namespace ChessConsole
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Green; 
             Console.WriteLine("_");
+        }
+
+        private static int CountMoves(List<Move> moves)
+        {
+            int count = moves.Count;
+            foreach (var move in moves)
+                count += CountMoves(move.SubsequentMoves);
+            return count;
         }
     }
 }

@@ -8,5 +8,6 @@ namespace ChessConsole
     {
         public Board PreviousBoard { get; set; }
         public Board Board { get; set; }
+        public List<Move> SubsequentMoves { get; set; } = new List<Move>();
     }
 }
