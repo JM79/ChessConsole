@@ -16,7 +16,8 @@ namespace ChessConsole
             //var moves = moveGenerator.GetPossibleMovesForPiece(board, 5, 6);
             var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 3);
 
-            //PrintMoves(moves);
+            //PrintCountTree(moves);
+            PrintMoves(moves);
             int moveCount = CountMoves(moves);
             Console.WriteLine($"Total moves: {moveCount}");
 
@@ -106,6 +107,18 @@ namespace ChessConsole
             {
                 PrintBoard(move.Board);
                 PrintMoves(move.SubsequentMoves);
+            }
+        }
+
+        private static void PrintCountTree(List<Move> moves, string prefix = "")
+        {
+            foreach (var move in moves)
+            {
+                if (move.SubsequentMoves.Count > 0)
+                {
+                    Console.WriteLine(prefix + " " + move.SubsequentMoves.Count);
+                    PrintCountTree(move.SubsequentMoves, prefix + "+");
+                }                
             }
         }
     }
