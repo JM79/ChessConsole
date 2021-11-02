@@ -16,17 +16,15 @@ namespace ChessConsole
                 for (int y = 0; y < Board.Ranks; y++)
                 {
                     if (!board.Squares[x, y].Piece.HasValue
-                      || board.Squares[x,y].Piece.Value.PieceColour != board.ColourToMoveNext)
+                      || board.Squares[x, y].Piece.Value.PieceColour != board.ColourToMoveNext)
                         continue; /* Skip empty squares or wrong colour pieces */
 
-                    for (int depth = 1; depth <= ply; depth++)
+                    var newMoves = GetPossibleMovesForPiece(board, x, y);
+                    foreach (var newMove in newMoves)
                     {
-                        var newMoves = GetPossibleMovesForPiece(board, x, y);
-                        foreach (var newMove in newMoves)
-                        {
-                            newMove.SubsequentMoves = GetAllPossibleMovesToDepth(newMove.Board, ply - depth);
-                            possMoves.Add(newMove);
-                        }
+                        if (ply > 1)
+                        { newMove.SubsequentMoves = GetAllPossibleMovesToDepth(newMove.Board, ply - 1); }
+                        possMoves.Add(newMove);
                     }
                 }
             }
@@ -46,21 +44,21 @@ namespace ChessConsole
                 case PieceType.Pawn:
                     moves.AddRange(GetPawnMoves(board, x, y));
                     break;
-                //case PieceType.Knight:
-                //    moves.AddRange(GetKnightMoves(board, x, y));
-                //    break;
-                //case PieceType.Bishop:
-                //    moves.AddRange(GetBishopMoves(board, x, y));
-                //    break;
-                //case PieceType.Rook:
-                //    moves.AddRange(GetRookMoves(board, x, y));
-                //    break;
-                //case PieceType.Queen:
-                //    moves.AddRange(GetQueenMoves(board, x, y));
-                //    break;
-                //case PieceType.King:
-                //    moves.AddRange(GetKingMoves(board, x, y));
-                //    break;
+                case PieceType.Knight:
+                    moves.AddRange(GetKnightMoves(board, x, y));
+                    break;
+                case PieceType.Bishop:
+                    moves.AddRange(GetBishopMoves(board, x, y));
+                    break;
+                case PieceType.Rook:
+                    moves.AddRange(GetRookMoves(board, x, y));
+                    break;
+                case PieceType.Queen:
+                    moves.AddRange(GetQueenMoves(board, x, y));
+                    break;
+                case PieceType.King:
+                    moves.AddRange(GetKingMoves(board, x, y));
+                    break;
                 default:
                     break;
             }
