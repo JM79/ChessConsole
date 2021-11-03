@@ -8,8 +8,9 @@ namespace ChessConsole
     {
         static void Main(string[] args)
         {
-            var board = new Board();
-            SetDefaultBoard(board);
+            //var board = new Board();
+            //SetDefaultBoard(board);
+            var board = GetTwoAdjPawnsBoard();
             PrintBoard(board);
 
             var moveGenerator = new MoveGenerator();
@@ -17,8 +18,8 @@ namespace ChessConsole
             var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 3);
 
             //PrintCountTree(moves);
-            PrintMoves(moves);
-            int moveCount = CountMoves(moves);
+            PrintEndMoves(moves);
+            int moveCount = MoveGenerator.CountMoves(moves);
             Console.WriteLine($"Total moves: {moveCount}");
 
             Console.WriteLine("Press enter to close");
@@ -57,6 +58,22 @@ namespace ChessConsole
             board.Squares[7, 7].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Rook,   Unicode = '\u265C', CharacterCode = 'R' };
         }
 
+        public static Board GetBasic2BishopBoard()
+        {
+            var board = new Board();
+            board.Squares[3, 3].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Bishop, CharacterCode = 'B' };
+            board.Squares[3, 4].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Bishop, CharacterCode = 'B' };
+            return board;
+        }
+
+        public static Board GetTwoAdjPawnsBoard()
+        {
+            var board = new Board();
+            board.Squares[3, 1].Piece = new Piece() { PieceColour = PieceColour.White, PieceType = PieceType.Pawn, CharacterCode = 'P' };
+            board.Squares[4, 6].Piece = new Piece() { PieceColour = PieceColour.Black, PieceType = PieceType.Pawn, CharacterCode = 'P' };
+            return board;
+        }
+
         public static void PrintBoard(Board board)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -87,26 +104,23 @@ namespace ChessConsole
             Console.WriteLine("_");
         }
 
-        private static int CountMoves(List<Move> moves)
-        {
-            //int count = moves.Count;
-            int count = 0;
-            foreach (var move in moves)
-            {
-                if (move.SubsequentMoves.Count == 0)
-                { count++; } /* Count only the final moves */
-                else
-                { count += CountMoves(move.SubsequentMoves); }
-            }
-            return count;
-        }
-
         private static void PrintMoves(List<Move> moves)
         {
             foreach (var move in moves)
             {
                 PrintBoard(move.Board);
                 PrintMoves(move.SubsequentMoves);
+            }
+        }
+
+        private static void PrintEndMoves(List<Move> moves)
+        {
+            foreach (var move in moves)
+            {
+                if (move.SubsequentMoves.Count == 0)
+                { PrintBoard(move.Board); } /* Count only the final moves */
+                else
+                { PrintEndMoves(move.SubsequentMoves); }
             }
         }
 

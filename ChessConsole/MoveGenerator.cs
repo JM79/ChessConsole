@@ -240,5 +240,18 @@ namespace ChessConsole
         {
             return (x < Board.Files && x >= 0 && y < Board.Ranks && y >= 0);
         }
+
+        public static int CountMoves(List<Move> moves)
+        {
+            int count = 0;
+            foreach (var move in moves)
+            {
+                if (move.SubsequentMoves.Count == 0)
+                { count++; } /* Count only the final moves */
+                else
+                { count += CountMoves(move.SubsequentMoves); }
+            }
+            return count;
+        }
     }
 }
