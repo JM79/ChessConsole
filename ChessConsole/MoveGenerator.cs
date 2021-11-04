@@ -74,7 +74,7 @@ namespace ChessConsole
 
             int diagMoveLeft, diagMoveRight, forwardMove;
             bool firstPawnMove = ((currentPiece.PieceColour == PieceColour.Black && y == 6)
-                               || (currentPiece.PieceColour != PieceColour.Black && y == 1));
+                               || (currentPiece.PieceColour == PieceColour.White && y == 1));
             if (currentPiece.PieceColour == PieceColour.Black)
             {
                 diagMoveLeft = 1;
@@ -105,14 +105,18 @@ namespace ChessConsole
             // Two step forward first move
             if (firstPawnMove)
             {
+                // Check there's nothing in the way of the first square
                 newPosX = x;
-                newPosY = y + (forwardMove*2);
-                    
-                // Check dest is empty
-                var destSquare = board.Squares[newPosX, newPosY];
-                if (!destSquare.Piece.HasValue)
+                newPosY = y + forwardMove;
+                if (!board.Squares[newPosX, newPosY].Piece.HasValue)
                 {
-                    moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                    newPosY += forwardMove;
+                    // Check dest is empty
+                    var destSquare = board.Squares[newPosX, newPosY];
+                    if (!destSquare.Piece.HasValue)
+                    {
+                        moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                    }
                 }
             }
 

@@ -8,9 +8,9 @@ namespace ChessConsole
     {
         static void Main(string[] args)
         {
-            //var board = new Board();
-            //SetDefaultBoard(board);
-            var board = GetTwoAdjPawnsBoard();
+            var board = new Board();
+            SetDefaultBoard(board);
+            //var board = GetTwoAdjPawnsBoard();
             PrintBoard(board);
 
             var moveGenerator = new MoveGenerator();
@@ -18,7 +18,7 @@ namespace ChessConsole
             var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 3);
 
             //PrintCountTree(moves);
-            PrintEndMoves(moves);
+            //PrintEndMoves(moves);
             int moveCount = MoveGenerator.CountMoves(moves);
             Console.WriteLine($"Total moves: {moveCount}");
 
