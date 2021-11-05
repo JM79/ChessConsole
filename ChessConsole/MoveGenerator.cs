@@ -215,7 +215,17 @@ namespace ChessConsole
                         if ((!destSquare.Piece.HasValue)
                          || destSquare.Piece?.PieceColour != currentPiece.PieceColour)
                         {
-                            moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                            var potentialNewMove = CreateNewMove(board, x, y, newPosX, newPosY);
+                            // If the king of the current colour is in check, it's not a valid move, don't add it
+                            if (!IsKingInCheck(potentialNewMove.Board, currentPiece.PieceColour))
+                            {
+                                // Check if the move has put the other side in check
+                                if (IsKingInCheck(potentialNewMove.Board, potentialNewMove.Board.ColourToMoveNext))
+                                { SetInCheck(potentialNewMove.Board, potentialNewMove.Board.ColourToMoveNext); }
+                                moves.Add(potentialNewMove);
+                            }
+                            else
+                            { Program.PrintBoard(potentialNewMove.Board); }
                         }
                         if (destSquare.Piece.HasValue)
                         { multiplier = moveMax + 1; } /* Hit another piece, no further moves possible in this direction */
@@ -256,6 +266,87 @@ namespace ChessConsole
                 { count += CountMoves(move.SubsequentMoves); }
             }
             return count;
+        }
+
+        public static bool IsKingInCheck(Board board, PieceColour pieceColour)
+        {
+            // Find King
+            int xKing = -1, yKing = -1;
+            for (int x = 0; x < Board.Files; x++)
+            {
+                for (int y = 0; y < Board.Ranks; y++)
+                {
+                    if (board.Squares[x,y].Piece?.PieceType == PieceType.King
+                     && board.Squares[x,y].Piece?.PieceColour == pieceColour)
+                    { xKing = x; yKing = y; }
+                }
+            }
+            if (xKing == -1 && yKing == -1) /* No king found */
+            { return false; }
+
+            // Check straight line attacks
+            var castleAndQueen = new List<PieceType>() { PieceType.Rook, PieceType.Queen };
+            if (LookForCheckAlongLine(board, castleAndQueen, xKing, yKing, 1, 0))  /* Horizontal */
+            { return true; }
+            if (LookForCheckAlongLine(board, castleAndQueen, xKing, yKing, 0, 1))  /* Vertical */
+            { return true; }
+            
+            // Check diagonal line attacks
+            var bishopAndQueen = new List<PieceType>() { PieceType.Bishop, PieceType.Queen };
+            if (LookForCheckAlongLine(board, castleAndQueen, xKing, yKing, 1, 1))  /* Diagonal lower left to higher right */
+            { return true; }
+            if (LookForCheckAlongLine(board, castleAndQueen, xKing, yKing, -1, 1)) /* Diagonal lower right to higher left */
+            { return true; }
+
+            // Check for Knight attacks
+
+            // Check for Pawn attacks
+
+            return false;
+        }
+
+        private static bool LookForCheckAlongLine(Board board, List<PieceType> checkPieceTypes, int xKing, int yKing, int xIncr, int yIncr)
+        {
+            int directionsChecked = 0;
+            Piece king = (Piece)board.Squares[xKing, yKing].Piece;
+            while (directionsChecked < 2)
+            {
+                int x = xKing + xIncr;
+                int y = yKing + yIncr;
+                while (x < Board.Files && x >= 0 && y < Board.Ranks && y >= 0)
+                {
+                    if (board.Squares[x, y].Piece.HasValue)
+                    {
+                        var foundPiece = (Piece)board.Squares[x, y].Piece;
+                        if (checkPieceTypes.Contains(foundPiece.PieceType) && foundPiece.PieceColour != king.PieceColour)
+                        { return true; }
+                        else /* Route blocked by another piece */
+                        { break; }
+                    }                    
+                    x += xIncr;
+                    y += yIncr;
+                }
+                directionsChecked++;
+                // Swap direction
+                xIncr = xIncr * -1;
+                yIncr = yIncr * -1;
+            }
+            return false;
+        }
+
+        private static void SetInCheck(Board board, PieceColour pieceColour)
+        {
+            switch (pieceColour)
+            {
+                case PieceColour.White:
+                    board.WhiteKingInCheck = true;
+                    break;
+                case PieceColour.Black:
+                    board.BlackKingInCheck = true;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

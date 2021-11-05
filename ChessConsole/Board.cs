@@ -24,6 +24,8 @@ namespace ChessConsole
         public const int Files = 8;
         public Square[,] Squares { get; set; } = new Square[Files, Ranks];
         public PieceColour ColourToMoveNext { get; set; }
+        public bool WhiteKingInCheck { get; set; }
+        public bool BlackKingInCheck { get; set; }
 
         public Board()
         {
