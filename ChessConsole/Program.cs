@@ -18,7 +18,7 @@ namespace ChessConsole
             var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 4);
 
             //PrintCountTree(moves);
-            //PrintEndMoves(moves);
+            PrintEndMoves(moves);
             int moveCount = MoveGenerator.CountMoves(moves);
             Console.WriteLine($"Total moves: {moveCount}");
 
@@ -101,7 +101,7 @@ namespace ChessConsole
 
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Green; 
-            Console.WriteLine("_");
+            Console.WriteLine("_\n");
         }
 
         private static void PrintMoves(List<Move> moves)

@@ -224,8 +224,8 @@ namespace ChessConsole
                                 { SetInCheck(potentialNewMove.Board, potentialNewMove.Board.ColourToMoveNext); }
                                 moves.Add(potentialNewMove);
                             }
-                            else
-                            { Program.PrintBoard(potentialNewMove.Board); }
+                            //else
+                            //{ Program.PrintBoard(potentialNewMove.Board); }
                         }
                         if (destSquare.Piece.HasValue)
                         { multiplier = moveMax + 1; } /* Hit another piece, no further moves possible in this direction */

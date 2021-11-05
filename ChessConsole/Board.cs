@@ -48,6 +48,8 @@ namespace ChessConsole
         {
             var newCopy = new Board();
             newCopy.ColourToMoveNext = ColourToMoveNext;
+            newCopy.BlackKingInCheck = BlackKingInCheck;
+            newCopy.WhiteKingInCheck = WhiteKingInCheck;
 
             for (int y = 0; y < Ranks; y++)
             {
