@@ -286,26 +286,35 @@ namespace ChessConsole
 
             // Check straight line attacks
             var castleAndQueen = new List<PieceType>() { PieceType.Rook, PieceType.Queen };
-            if (LookForCheckAlongLine(board, castleAndQueen, xKing, yKing, 1, 0))  /* Horizontal */
+            if (LookForCheckInDirection(board, castleAndQueen, xKing, yKing, 1, 0))  /* Horizontal */
             { return true; }
-            if (LookForCheckAlongLine(board, castleAndQueen, xKing, yKing, 0, 1))  /* Vertical */
+            if (LookForCheckInDirection(board, castleAndQueen, xKing, yKing, 0, 1))  /* Vertical */
             { return true; }
             
             // Check diagonal line attacks
             var bishopAndQueen = new List<PieceType>() { PieceType.Bishop, PieceType.Queen };
-            if (LookForCheckAlongLine(board, bishopAndQueen, xKing, yKing, 1, 1))  /* Diagonal lower left to higher right */
+            if (LookForCheckInDirection(board, bishopAndQueen, xKing, yKing, 1, 1))  /* Diagonal lower left to higher right */
             { return true; }
-            if (LookForCheckAlongLine(board, bishopAndQueen, xKing, yKing, -1, 1)) /* Diagonal lower right to higher left */
+            if (LookForCheckInDirection(board, bishopAndQueen, xKing, yKing, -1, 1)) /* Diagonal lower right to higher left */
             { return true; }
 
             // Check for Knight attacks
+            var knightsOnly = new List<PieceType>() { PieceType.Knight };
+            if (LookForCheckInDirection(board, knightsOnly, xKing, yKing, 1, 2, stepLimit: 1))
+            { return true; }
+            if (LookForCheckInDirection(board, knightsOnly, xKing, yKing, 2, 1, stepLimit: 1))
+            { return true; }
+            if (LookForCheckInDirection(board, knightsOnly, xKing, yKing, -1, 2, stepLimit: 1))
+            { return true; }
+            if (LookForCheckInDirection(board, knightsOnly, xKing, yKing, -2, 1, stepLimit: 1))
+            { return true; }
 
             // Check for Pawn attacks
 
             return false;
         }
 
-        private static bool LookForCheckAlongLine(Board board, List<PieceType> checkPieceTypes, int xKing, int yKing, int xIncr, int yIncr)
+        private static bool LookForCheckInDirection(Board board, List<PieceType> checkPieceTypes, int xKing, int yKing, int xIncr, int yIncr, int stepLimit = 8)
         {
             int directionsChecked = 0;
             Piece king = (Piece)board.Squares[xKing, yKing].Piece;
@@ -313,21 +322,23 @@ namespace ChessConsole
             {
                 int x = xKing + xIncr;
                 int y = yKing + yIncr;
-                while (x < Board.Files && x >= 0 && y < Board.Ranks && y >= 0)
+                int stepsTaken = 0;
+                while (x < Board.Files && x >= 0 && y < Board.Ranks && y >= 0 && stepsTaken < stepLimit)
                 {
                     if (board.Squares[x, y].Piece.HasValue)
                     {
                         var foundPiece = (Piece)board.Squares[x, y].Piece;
                         if (checkPieceTypes.Contains(foundPiece.PieceType) && foundPiece.PieceColour != king.PieceColour)
                         {
-                            Program.PrintBoard(board);
+                            //Program.PrintBoard(board);
                             return true;
                         }
                         else /* Route blocked by another piece */
                         { break; }
-                    }                    
+                    }
                     x += xIncr;
                     y += yIncr;
+                    stepsTaken++;
                 }
                 directionsChecked++;
                 // Swap direction
