@@ -15,7 +15,7 @@ namespace ChessConsole
 
             var moveGenerator = new MoveGenerator();
             //var moves = moveGenerator.GetPossibleMovesForPiece(board, 5, 6);
-            var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 1);
+            var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 4);
 
             //PrintCountTree(moves);
             //PrintEndMoves(moves);

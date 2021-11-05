@@ -293,9 +293,9 @@ namespace ChessConsole
             
             // Check diagonal line attacks
             var bishopAndQueen = new List<PieceType>() { PieceType.Bishop, PieceType.Queen };
-            if (LookForCheckAlongLine(board, castleAndQueen, xKing, yKing, 1, 1))  /* Diagonal lower left to higher right */
+            if (LookForCheckAlongLine(board, bishopAndQueen, xKing, yKing, 1, 1))  /* Diagonal lower left to higher right */
             { return true; }
-            if (LookForCheckAlongLine(board, castleAndQueen, xKing, yKing, -1, 1)) /* Diagonal lower right to higher left */
+            if (LookForCheckAlongLine(board, bishopAndQueen, xKing, yKing, -1, 1)) /* Diagonal lower right to higher left */
             { return true; }
 
             // Check for Knight attacks
@@ -319,7 +319,10 @@ namespace ChessConsole
                     {
                         var foundPiece = (Piece)board.Squares[x, y].Piece;
                         if (checkPieceTypes.Contains(foundPiece.PieceType) && foundPiece.PieceColour != king.PieceColour)
-                        { return true; }
+                        {
+                            Program.PrintBoard(board);
+                            return true;
+                        }
                         else /* Route blocked by another piece */
                         { break; }
                     }                    
