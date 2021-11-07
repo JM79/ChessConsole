@@ -11,14 +11,18 @@ namespace ChessConsole
             var board = new Board();
             SetDefaultBoard(board);
             //var board = GetTwoAdjPawnsBoard();
-            PrintBoard(board);
+            //PrintBoard(board);
 
             var moveGenerator = new MoveGenerator();
             //var moves = moveGenerator.GetPossibleMovesForPiece(board, 5, 6);
             var moves = moveGenerator.GetAllPossibleMovesToDepth(board, 4);
+            //PrintFirstMoveCounts(moves);
+            //PrintFirstMoveCounts(moves);
+            //PrintMoves(moves[4].SubsequentMoves);
+            //Console.WriteLine(MoveGenerator.CountMoves(moves[4].SubsequentMoves));
 
             //PrintCountTree(moves);
-            PrintEndMoves(moves);
+            //PrintEndMoves(moves);
             int moveCount = MoveGenerator.CountMoves(moves);
             Console.WriteLine($"Total moves: {moveCount}");
 
@@ -133,6 +137,20 @@ namespace ChessConsole
                     Console.WriteLine(prefix + " " + move.SubsequentMoves.Count);
                     PrintCountTree(move.SubsequentMoves, prefix + "+");
                 }                
+            }
+        }
+
+        private static void PrintFirstMoveCounts(List<Move> moves)
+        {
+            int c = 1;
+            foreach (var move in moves)
+            {
+                //Console.WriteLine(MoveGenerator.CountMoves(move.SubsequentMoves));
+                if (c == 5)
+                {
+                    PrintEndMoves(move.SubsequentMoves);
+                }
+                c++;
             }
         }
     }
