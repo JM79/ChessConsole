@@ -11,7 +11,7 @@ namespace ChessConsole
         public List<Move> GetAllPossibleMovesToDepth(Board board, int ply)
         {
             var possMoves = new List<Move>();
-            for(int x = 0; x < Board.Files; x++)
+            for (int x = 0; x < Board.Files; x++)
             {
                 for (int y = 0; y < Board.Ranks; y++)
                 {
@@ -30,12 +30,12 @@ namespace ChessConsole
             }
             return possMoves;
         }
-        
+
         public List<Move> GetPossibleMovesForPiece(Board board, int x, int y)
         {
             var moves = new List<Move>();
             var piece = board.Squares[x, y].Piece;
-            
+
             if (!piece.HasValue)
             { return moves; }
 
@@ -98,7 +98,7 @@ namespace ChessConsole
                 var destSquare = board.Squares[newPosX, newPosY];
                 if (!destSquare.Piece.HasValue)
                 {
-                    moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                    AddMoveIfValid(moves, board, x, y, newPosX, newPosY);
                 }
             }
 
@@ -115,7 +115,7 @@ namespace ChessConsole
                     var destSquare = board.Squares[newPosX, newPosY];
                     if (!destSquare.Piece.HasValue)
                     {
-                        moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                        AddMoveIfValid(moves, board, x, y, newPosX, newPosY);
                     }
                 }
             }
@@ -130,7 +130,7 @@ namespace ChessConsole
                 if (destSquare.Piece.HasValue
                     && destSquare.Piece.Value.PieceColour != currentPiece.PieceColour)
                 {
-                    moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                    AddMoveIfValid(moves, board, x, y, newPosX, newPosY);
                 }
             }
 
@@ -144,7 +144,7 @@ namespace ChessConsole
                 if (destSquare.Piece.HasValue
                     && destSquare.Piece.Value.PieceColour != currentPiece.PieceColour)
                 {
-                    moves.Add(CreateNewMove(board, x, y, newPosX, newPosY));
+                    AddMoveIfValid(moves, board, x, y, newPosX, newPosY);
                 }
             }
 
@@ -178,7 +178,7 @@ namespace ChessConsole
             int[,] moveDirections = new int[8, 2]
             {
                 { 1, 0 }, { 1, 1 }, { 1, -1 },
-                { 0, -1 },{ 0, 1 }, 
+                { 0, -1 },{ 0, 1 },
                 { -1, 0 },{ -1, -1 }, { -1, 1 }
             };
             return GetMoves(board, x, y, moveDirections, singleMove: true);
@@ -200,7 +200,7 @@ namespace ChessConsole
             var currentPiece = board.Squares[x, y].Piece.Value;
             var moves = new List<Move>();
             int moveMax = singleMove ? 1 : 8;
-            for (int dir = 0; dir < moveDirections.Length/2; dir++)
+            for (int dir = 0; dir < moveDirections.Length / 2; dir++)
             {
                 for (int multiplier = 1; multiplier <= moveMax; multiplier++)
                 {
@@ -215,20 +215,7 @@ namespace ChessConsole
                         if ((!destSquare.Piece.HasValue)
                          || destSquare.Piece?.PieceColour != currentPiece.PieceColour)
                         {
-                            var potentialNewMove = CreateNewMove(board, x, y, newPosX, newPosY);
-                            // If the king of the current colour is in check, it's not a valid move, don't add it
-                            if (!IsKingInCheck(potentialNewMove.Board, currentPiece.PieceColour))
-                            {
-                                // Check if the move has put the other side in check
-                                if (IsKingInCheck(potentialNewMove.Board, potentialNewMove.Board.ColourToMoveNext))
-                                { SetInCheck(potentialNewMove.Board, potentialNewMove.Board.ColourToMoveNext); }
-                                moves.Add(potentialNewMove);
-                            }
-                            else
-                            {
-                                Program.PrintBoard(potentialNewMove.Board);
-                                Console.WriteLine(potentialNewMove.Board.ColourToMoveNext);
-                            }
+                            AddMoveIfValid(moves, board, x, y, newPosX, newPosY);
                         }
                         if (destSquare.Piece.HasValue)
                         { multiplier = moveMax + 1; } /* Hit another piece, no further moves possible in this direction */
@@ -238,6 +225,20 @@ namespace ChessConsole
                 }
             }
             return moves;
+        }
+
+        private void AddMoveIfValid(List<Move> moves, Board board, int x, int y, int newPosX, int newPosY)
+        {
+            var currentPiece = board.Squares[x, y].Piece.Value;
+            var potentialNewMove = CreateNewMove(board, x, y, newPosX, newPosY);
+            // If the king of the current colour is in check, it's not a valid move, don't add it
+            if (!IsKingInCheck(potentialNewMove.Board, currentPiece.PieceColour))
+            {
+                // Check if the move has put the other side in check
+                if (IsKingInCheck(potentialNewMove.Board, potentialNewMove.Board.ColourToMoveNext))
+                { SetInCheck(potentialNewMove.Board, potentialNewMove.Board.ColourToMoveNext); }
+                moves.Add(potentialNewMove);
+            }
         }
 
         private Move CreateNewMove(Board board, int x, int y, int newPosX, int newPosY)
@@ -250,7 +251,15 @@ namespace ChessConsole
             {
                 Board = newBoard,
                 PreviousBoard = board,
+                MoveText = TranslateMoveToText(x, y, newPosX, newPosY)
             };
+        }
+
+        // TODO: Move this enum and function to an output utils class
+        enum BoardFiles { a, b, c, d, e, f, g, h };
+        private string TranslateMoveToText(int fromX, int fromY, int toX, int toY)
+        {
+            return $"{(BoardFiles)fromX}{fromY + 1}{(BoardFiles)toX}{toY + 1}";
         }
 
         private bool IsPositionOnBoard(Board board, int x, int y)
@@ -279,8 +288,8 @@ namespace ChessConsole
             {
                 for (int y = 0; y < Board.Ranks; y++)
                 {
-                    if (board.Squares[x,y].Piece?.PieceType == PieceType.King
-                     && board.Squares[x,y].Piece?.PieceColour == pieceColour)
+                    if (board.Squares[x, y].Piece?.PieceType == PieceType.King
+                     && board.Squares[x, y].Piece?.PieceColour == pieceColour)
                     { xKing = x; yKing = y; }
                 }
             }
@@ -293,7 +302,7 @@ namespace ChessConsole
             { return true; }
             if (LookForCheckInDirection(board, castleAndQueen, xKing, yKing, 0, 1))  /* Vertical */
             { return true; }
-            
+
             // Check diagonal line attacks
             var bishopAndQueen = new List<PieceType>() { PieceType.Bishop, PieceType.Queen };
             if (LookForCheckInDirection(board, bishopAndQueen, xKing, yKing, 1, 1))  /* Diagonal lower left to higher right */
@@ -333,6 +342,10 @@ namespace ChessConsole
                         var foundPiece = (Piece)board.Squares[x, y].Piece;
                         if (checkPieceTypes.Contains(foundPiece.PieceType) && foundPiece.PieceColour != king.PieceColour)
                         {
+                            if (king.PieceColour == PieceColour.Black)
+                            {
+                                return true;
+                            }
                             //Program.PrintBoard(board);
                             return true;
                         }

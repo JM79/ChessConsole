@@ -65,7 +65,7 @@ namespace Tests
             // Test
             Assert.AreEqual(197281, moveCount);
         }
-
+        
         private static Board GetDefaultBoard()
         {
             var board = new Board();
